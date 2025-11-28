@@ -1,0 +1,40 @@
+[
+  {
+    "id": "p1",
+    "name": "Galaxy S24 Ultra",
+    "category": "phone",
+    "price": 1299.99,
+    "description": "High-end Android smartphone with excellent camera and performance.",
+    "images": [
+      "sample.jpg",
+      "sample.jpg",
+      "sample.jpg",
+      "sample.jpg"
+    ],
+    "specs": {
+      "storage": "256GB",
+      "ram": "12GB",
+      "screen": "6.8\" AMOLED",
+      "battery": "5000mAh"
+    }
+  },
+  {
+    "id": "p2",
+    "name": "MacBook Air M2",
+    "category": "computer",
+    "price": 1199.0,
+    "description": "Lightweight laptop with Apple M2 chip.",
+    "images": [
+      "sample.jpg",
+      "sample.jpg",
+      "sample.jpg",
+      "sample.jpg"
+    ],
+    "specs": {
+      "storage": "512GB",
+      "ram": "16GB",
+      "screen": "13.6\" Liquid Retina",
+      "battery": "Up to 18 hours"
+    }
+  }
+]

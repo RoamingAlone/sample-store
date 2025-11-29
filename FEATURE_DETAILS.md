@@ -6,4 +6,3 @@
 - Click to change main image
 - Add to cart from details page
 - Product specifications display
-

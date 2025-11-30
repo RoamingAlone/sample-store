@@ -1,109 +1,247 @@
-import React from "react";
+import React, { useState } from "react";
+import { useCart } from "../context/CartContext.jsx";
 
 function Checkout() {
-  return (
-    <section className="page page-checkout">
-      <h1>Checkout</h1>
+  const { totalPrice, clearCart } = useCart();
+  const [sameAsBilling, setSameAsBilling] = useState(false);
 
-      <form className="checkout-form">
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert("Payment processed! (Fake checkout for assignment)");
+    clearCart();
+  };
+
+  return (
+    <section className="page page-checkout container my-5">
+      <h1 className="mb-2">Checkout</h1>
+      <p className="text-muted mb-4">
+        Order total: <strong>${totalPrice.toFixed(2)}</strong>
+      </p>
+
+      <form onSubmit={handleSubmit}>
         {/* Personal Information */}
-        <fieldset>
-          <legend>Personal Information</legend>
-          <div className="form-row">
-            <label>
-              First Name*
-              <input type="text" name="firstName" required />
-            </label>
-            <label>
-              Last Name*
-              <input type="text" name="lastName" required />
-            </label>
+        <div className="card mb-3">
+          <div className="card-header fw-bold">Personal Information</div>
+          <div className="card-body">
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">First Name*</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="firstName"
+                  className="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">Last Name*</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="lastName"
+                  className="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">Email*</label>
+              <div className="col-sm-9">
+                <input
+                  type="email"
+                  name="email"
+                  className="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div className="row mb-0">
+              <label className="col-sm-3 col-form-label">Mobile*</label>
+              <div className="col-sm-9">
+                <input
+                  type="tel"
+                  name="phone"
+                  className="form-control"
+                  required
+                />
+              </div>
+            </div>
           </div>
-          <div className="form-row">
-            <label>
-              Email*
-              <input type="email" name="email" required />
-            </label>
-            <label>
-              Phone*
-              <input type="tel" name="phone" required />
-            </label>
-          </div>
-        </fieldset>
+        </div>
 
         {/* Billing Address */}
-        <fieldset>
-          <legend>Billing Address</legend>
-          {/* TODO: proper address fields */}
-          <label>
-            Address Line 1*
-            <input type="text" name="billingAddress1" required />
-          </label>
-          <label>
-            City*
-            <input type="text" name="billingCity" required />
-          </label>
-          <label>
-            Postal Code*
-            <input type="text" name="billingPostal" required />
-          </label>
-        </fieldset>
+        <div className="card mb-3">
+          <div className="card-header fw-bold">Billing Address</div>
+          <div className="card-body">
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">Street*</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="billingStreet"
+                  className="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">City*</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="billingCity"
+                  className="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">State</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="billingState"
+                  className="form-control"
+                />
+              </div>
+            </div>
+            <div className="row mb-0">
+              <label className="col-sm-3 col-form-label">ZIP Code*</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="billingZip"
+                  className="form-control"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
 
-        {/* Checkbox: same as billing */}
-        <div className="form-row">
-          <label className="checkbox-label">
-            <input type="checkbox" name="sameAsBilling" />
+        {/* Same as billing checkbox */}
+        <div className="form-check mb-3 ms-1">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="sameAsBilling"
+            checked={sameAsBilling}
+            onChange={(e) => setSameAsBilling(e.target.checked)}
+          />
+          <label className="form-check-label" htmlFor="sameAsBilling">
             Same as billing address
           </label>
         </div>
 
-        {/* Delivery Address */}
-        <fieldset>
-          <legend>Delivery Address</legend>
-          {/* TODO: copy billing when checkbox is checked */}
-          <label>
-            Address Line 1*
-            <input type="text" name="deliveryAddress1" required />
-          </label>
-          <label>
-            City*
-            <input type="text" name="deliveryCity" required />
-          </label>
-          <label>
-            Postal Code*
-            <input type="text" name="deliveryPostal" required />
-          </label>
-        </fieldset>
+        {/* Delivery / Shipping Address */}
+        <div className="card mb-3">
+          <div className="card-header fw-bold">Shipping Address</div>
+          <div className="card-body">
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">Street*</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="shippingStreet"
+                  className="form-control"
+                  required
+                  disabled={sameAsBilling}
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">City*</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="shippingCity"
+                  className="form-control"
+                  required
+                  disabled={sameAsBilling}
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">State</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="shippingState"
+                  className="form-control"
+                  disabled={sameAsBilling}
+                />
+              </div>
+            </div>
+            <div className="row mb-0">
+              <label className="col-sm-3 col-form-label">ZIP Code*</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="shippingZip"
+                  className="form-control"
+                  required
+                  disabled={sameAsBilling}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Credit Card */}
-        <fieldset>
-          <legend>Credit Card</legend>
-          <label>
-            Card Number*
-            <input type="text" name="cardNumber" required />
-          </label>
-          <div className="form-row">
-            <label>
-              Expiry (MM/YY)*
-              <input type="text" name="expiry" required />
-            </label>
-            <label>
-              CVV*
-              <input type="text" name="cvv" required />
-            </label>
+        <div className="card mb-3">
+          <div className="card-header fw-bold">Credit Card Information</div>
+          <div className="card-body">
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">Card Number*</label>
+              <div className="col-sm-9">
+                <input
+                  type="text"
+                  name="cardNumber"
+                  className="form-control"
+                  required
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <label className="col-sm-3 col-form-label">Expiry Date*</label>
+              <div className="col-sm-3">
+                <input
+                  type="text"
+                  name="expiry"
+                  className="form-control"
+                  placeholder="MM/YY"
+                  required
+                />
+              </div>
+              <label className="col-sm-3 col-form-label">CVV*</label>
+              <div className="col-sm-3">
+                <input
+                  type="text"
+                  name="cvv"
+                  className="form-control"
+                  required
+                />
+              </div>
+            </div>
           </div>
-        </fieldset>
+        </div>
 
-        {/* Terms & Pay Now */}
-        <div className="form-row">
-          <label className="checkbox-label">
-            <input type="checkbox" name="terms" />
-            I agree to the terms and conditions
+        {/* Terms + Pay Now */}
+        <div className="form-check mb-3 ms-1">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="terms"
+            required
+          />
+          <label className="form-check-label" htmlFor="terms">
+            I agree to the Terms and Conditions
           </label>
         </div>
 
-        <button type="submit" className="btn-primary">
-          Pay now
+        <button type="submit" className="btn btn-dark w-100">
+          Pay Now
         </button>
       </form>
     </section>

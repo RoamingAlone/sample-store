@@ -474,6 +474,12 @@ body {
   font-weight: 600;
 }
 
+.cart-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
 .checkout-form {
   display: flex;
   flex-direction: column;

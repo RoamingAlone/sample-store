@@ -2,10 +2,19 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
 
+// 🔹 helper: turn "$1699" or "1699" into 1699
+function parsePrice(value) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") {
+    const numeric = Number(value.replace(/[^0-9.]/g, ""));
+    return Number.isFinite(numeric) ? numeric : 0;
+  }
+  return 0;
+}
+
 export function CartProvider({ children }) {
   const [items, setItems] = useState([]);
 
-  // Load from localStorage once
   useEffect(() => {
     const stored = localStorage.getItem("cart");
     if (stored) {
@@ -17,17 +26,24 @@ export function CartProvider({ children }) {
     }
   }, []);
 
-  // Save to localStorage whenever cart changes
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(items));
   }, [items]);
 
-  // product shape (from your Home/ProductDetails): { id, name, price, images, ... }
+  // product from Home/ProductDetails: { productId, name, price, imageUrl, ... }
   const addToCart = (product) => {
     setItems((prev) => {
-      const idx = prev.findIndex((p) => p.id === product.id);
+      const normalizedProduct = {
+        ...product,
+        // 🔹 ensure price is a number INSIDE the cart
+        price: parsePrice(product.price),
+      };
+
+      const idx = prev.findIndex(
+        (p) => p.productId === normalizedProduct.productId
+      );
       if (idx === -1) {
-        return [...prev, { ...product, quantity: 1 }];
+        return [...prev, { ...normalizedProduct, quantity: 1 }];
       }
       const copy = [...prev];
       copy[idx] = { ...copy[idx], quantity: copy[idx].quantity + 1 };
@@ -35,26 +51,26 @@ export function CartProvider({ children }) {
     });
   };
 
-  const updateQuantity = (id, delta) => {
+  const updateQuantity = (productId, delta) => {
     setItems((prev) =>
       prev
         .map((item) =>
-          item.id === id
+          item.productId === productId
             ? { ...item, quantity: item.quantity + delta }
             : item
         )
-        .filter((item) => item.quantity > 0) // remove if qty <= 0
+        .filter((item) => item.quantity > 0)
     );
   };
 
-  const removeFromCart = (id) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+  const removeFromCart = (productId) => {
+    setItems((prev) => prev.filter((item) => item.productId !== productId));
   };
 
   const clearCart = () => setItems([]);
 
   const totalPrice = items.reduce(
-    (sum, item) => sum + (item.price || 0) * (item.quantity || 0),
+    (sum, item) => sum + item.price * item.quantity,
     0
   );
 

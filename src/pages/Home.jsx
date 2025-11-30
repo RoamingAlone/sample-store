@@ -56,7 +56,7 @@ function Home() {
   const handleAddToCart = (product, event) => {
     event.preventDefault();
     addToCart(product);
-    alert(`${product.name} added to cart!`);
+    alert(`${product.name || product.productId} added to cart!`);
   };
 
   // Navigate to product details page

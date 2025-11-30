@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../context/CartContext.jsx";
+
 
 function Home() {
   const [products, setProducts] = useState([]);
@@ -7,6 +9,7 @@ function Home() {
   const [moreProducts, setMoreProducts] = useState(true);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { addToCart } = useCart();
 
   // Fetch initial batches (1 and 2) on component mount
   useEffect(() => {
@@ -49,33 +52,11 @@ function Home() {
     fetchBatch(nextBatch);
   };
 
-  // Add product to cart in localStorage
-  const addToCart = (product, event) => {
+  // Add to cart function
+  const handleAddToCart = (product, event) => {
     event.preventDefault();
-    
-    // Get existing cart from localStorage
-    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    
-    // Check if product already exists in cart
-    const existingItemIndex = existingCart.findIndex(
-      item => item.productId === product.productId
-    );
-    
-    if (existingItemIndex !== -1) {
-      // Product exists - increase quantity
-      existingCart[existingItemIndex].quantity += 1;
-    } else {
-      // New product - add with quantity 1
-      existingCart.push({
-        ...product,
-        quantity: 1
-      });
-    }
-    
-    // Save updated cart to localStorage
-    localStorage.setItem("cart", JSON.stringify(existingCart));
-    
-    alert(`${product.name || product.productId} added to cart!`);
+    addToCart(product);
+    alert(`${product.name} added to cart!`);
   };
 
   // Navigate to product details page
@@ -124,7 +105,7 @@ function Home() {
                 View Details
               </Link>
               <button
-                onClick={(e) => addToCart(product, e)}
+                onClick={(e) => handleAddToCart(product, e)}
                 className="btn-primary"
               >
                 Add to Cart

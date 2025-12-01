@@ -3,11 +3,68 @@ import { useCart } from "../context/CartContext.jsx";
 
 function Checkout() {
   const { totalPrice, clearCart } = useCart();
+
+  // Billing + Shipping controlled inputs so we can sync them.
+  const [billing, setBilling] = useState({
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+
+  const [shipping, setShipping] = useState({
+    street: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+
   const [sameAsBilling, setSameAsBilling] = useState(false);
+
+  // Credit card fields (still just cosmetic, but controlled)
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
+
+  const handleBillingChange = (field, value) => {
+    setBilling((prev) => {
+      const updated = { ...prev, [field]: value };
+
+      // If "same as billing" is on, keep shipping in sync
+      if (sameAsBilling) {
+        setShipping(updated);
+      }
+
+      return updated;
+    });
+  };
+
+  const handleShippingChange = (field, value) => {
+    // Only allow manual editing when NOT sameAsBilling
+    setShipping((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSameAsBillingToggle = (e) => {
+    const checked = e.target.checked;
+    setSameAsBilling(checked);
+
+    if (checked) {
+      // Copy current billing values into shipping
+      setShipping(billing);
+    }
+    // If unchecked, we simply stop syncing – user can edit shipping fields
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Payment processed! (Fake checkout for assignment)");
+
+    if (totalPrice === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
+
+    // In a real app you’d send data to a server here
+    alert("Payment processed! Thank you for your purchase.");
     clearCart();
   };
 
@@ -79,9 +136,12 @@ function Checkout() {
               <div className="col-sm-9">
                 <input
                   type="text"
-                  name="billingStreet"
                   className="form-control"
                   required
+                  value={billing.street}
+                  onChange={(e) =>
+                    handleBillingChange("street", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -90,9 +150,12 @@ function Checkout() {
               <div className="col-sm-9">
                 <input
                   type="text"
-                  name="billingCity"
                   className="form-control"
                   required
+                  value={billing.city}
+                  onChange={(e) =>
+                    handleBillingChange("city", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -101,8 +164,11 @@ function Checkout() {
               <div className="col-sm-9">
                 <input
                   type="text"
-                  name="billingState"
                   className="form-control"
+                  value={billing.state}
+                  onChange={(e) =>
+                    handleBillingChange("state", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -111,9 +177,10 @@ function Checkout() {
               <div className="col-sm-9">
                 <input
                   type="text"
-                  name="billingZip"
                   className="form-control"
                   required
+                  value={billing.zip}
+                  onChange={(e) => handleBillingChange("zip", e.target.value)}
                 />
               </div>
             </div>
@@ -127,14 +194,14 @@ function Checkout() {
             type="checkbox"
             id="sameAsBilling"
             checked={sameAsBilling}
-            onChange={(e) => setSameAsBilling(e.target.checked)}
+            onChange={handleSameAsBillingToggle}
           />
           <label className="form-check-label" htmlFor="sameAsBilling">
             Same as billing address
           </label>
         </div>
 
-        {/* Delivery / Shipping Address */}
+        {/* Shipping Address */}
         <div className="card mb-3">
           <div className="card-header fw-bold">Shipping Address</div>
           <div className="card-body">
@@ -143,10 +210,13 @@ function Checkout() {
               <div className="col-sm-9">
                 <input
                   type="text"
-                  name="shippingStreet"
                   className="form-control"
                   required
                   disabled={sameAsBilling}
+                  value={shipping.street}
+                  onChange={(e) =>
+                    handleShippingChange("street", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -155,10 +225,13 @@ function Checkout() {
               <div className="col-sm-9">
                 <input
                   type="text"
-                  name="shippingCity"
                   className="form-control"
                   required
                   disabled={sameAsBilling}
+                  value={shipping.city}
+                  onChange={(e) =>
+                    handleShippingChange("city", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -167,9 +240,12 @@ function Checkout() {
               <div className="col-sm-9">
                 <input
                   type="text"
-                  name="shippingState"
                   className="form-control"
                   disabled={sameAsBilling}
+                  value={shipping.state}
+                  onChange={(e) =>
+                    handleShippingChange("state", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -178,10 +254,13 @@ function Checkout() {
               <div className="col-sm-9">
                 <input
                   type="text"
-                  name="shippingZip"
                   className="form-control"
                   required
                   disabled={sameAsBilling}
+                  value={shipping.zip}
+                  onChange={(e) =>
+                    handleShippingChange("zip", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -197,30 +276,35 @@ function Checkout() {
               <div className="col-sm-9">
                 <input
                   type="text"
-                  name="cardNumber"
                   className="form-control"
                   required
+                  value={cardNumber}
+                  onChange={(e) => setCardNumber(e.target.value)}
                 />
               </div>
             </div>
-            <div className="row mb-3">
-              <label className="col-sm-3 col-form-label">Expiry Date*</label>
-              <div className="col-sm-3">
+
+            {/* Expiry + CVV row, labels directly above inputs */}
+            <div className="row mb-0">
+              <div className="col-sm-6">
+                <label className="form-label">Expiry Date*</label>
                 <input
                   type="text"
-                  name="expiry"
                   className="form-control"
                   placeholder="MM/YY"
                   required
+                  value={expiry}
+                  onChange={(e) => setExpiry(e.target.value)}
                 />
               </div>
-              <label className="col-sm-3 col-form-label">CVV*</label>
-              <div className="col-sm-3">
+              <div className="col-sm-6">
+                <label className="form-label">CVV*</label>
                 <input
                   type="text"
-                  name="cvv"
                   className="form-control"
                   required
+                  value={cvv}
+                  onChange={(e) => setCvv(e.target.value)}
                 />
               </div>
             </div>

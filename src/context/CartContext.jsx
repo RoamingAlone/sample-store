@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 
 const CartContext = createContext();
 
-// 🔹 helper: turn "$1699" or "1699" into 1699
+// turn "$1699" or "1699" into 1699
 function parsePrice(value) {
   if (typeof value === "number") return value;
   if (typeof value === "string") {
@@ -35,7 +35,7 @@ export function CartProvider({ children }) {
     setItems((prev) => {
       const normalizedProduct = {
         ...product,
-        // 🔹 ensure price is a number INSIDE the cart
+        // ensure price is a number INSIDE the cart
         price: parsePrice(product.price),
       };
 

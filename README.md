@@ -1,5 +1,8 @@
 # COS 224 Final Project: Online Store Front End
 
+- Repo: https://github.com/RoamingAlone/sample-store
+- Website: https://roamingalone.github.io/sample-store/
+
 ## Requirements
 
 ### Have Four Pages
